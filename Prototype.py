@@ -1,4 +1,6 @@
 import random
+import math
+
 class Brain:
     def __init__ (self, layers_amount, neurons, input):
         self.input = input
@@ -17,7 +19,7 @@ class Brain:
     def compute (self, input):
         for i in range(len(self.brain)):
             input = Brain.run_layers(input, self.brain[i])
-        return [i for i in input if i > self.threshhold]
+        return [i for i in range(len(input)) if input[i] > self.threshhold]
 
     def mutate(self, mutation_rate=0.1, mutation_strength=0.5):
         """
@@ -35,9 +37,9 @@ class Brain:
                     self.brain[layer_idx][neuron_idx] += mutation
                     
                     # Optionally clamp weights to prevent them from growing too large
-                    self.brain[layer_idx][neuron_idx] = max(-1.0, min(1.0, self.brain[layer_idx][neuron_idx]))         
+                    self.brain[layer_idx][neuron_idx] = max(-1.0, min(1.0, self.brain[layer_idx][neuron_idx]))
 
-if __name__ == "__main__":
-    brain = Brain(3, 3, [0.5, 0.2, 0.1])
-    print(brain.compute([0.5, 0.2, 0.1]))
-        
+
+
+
+
