@@ -17,7 +17,25 @@ class Brain:
     def compute (self, input):
         for i in range(len(self.brain)):
             input = Brain.run_layers(input, self.brain[i])
-        return [i for i in input if i > self.threshhold]         
+        return [i for i in input if i > self.threshhold]
+
+    def mutate(self, mutation_rate=0.1, mutation_strength=0.5):
+        """
+        Mutate the neural network weights.
+        
+        Args:
+            mutation_rate: Probability that each weight will be mutated (0.0 to 1.0)
+            mutation_strength: Maximum amount a weight can change during mutation
+        """
+        for layer_idx in range(len(self.brain)):
+            for neuron_idx in range(len(self.brain[layer_idx])):
+                if random.random() < mutation_rate:
+                    # Add random noise to the weight
+                    mutation = random.uniform(-mutation_strength, mutation_strength)
+                    self.brain[layer_idx][neuron_idx] += mutation
+                    
+                    # Optionally clamp weights to prevent them from growing too large
+                    self.brain[layer_idx][neuron_idx] = max(-1.0, min(1.0, self.brain[layer_idx][neuron_idx]))         
 
 if __name__ == "__main__":
     brain = Brain(3, 3, [0.5, 0.2, 0.1])
