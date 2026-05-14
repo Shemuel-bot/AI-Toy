@@ -88,8 +88,8 @@ def evaluate_population(population, input, answer):
 
 
 def main():
-    population_size = 1000
-    generations = 50
+    population_size = 100
+    generations = 1000
     mutation_rate = 0.1
     mutation_strength = 0.5
 
@@ -98,7 +98,7 @@ def main():
 
     for generation in range(generations):
         # Evaluate population
-        fitness, best_brain, best_output = evaluate_population(population, [2, 1], [2, 1])
+        fitness, best_brain, best_output = evaluate_population(population, [3, 2, 1], [2, 3, 1])
         
         # Check if we found a solution with perfect fitness
         if fitness >= 1:
