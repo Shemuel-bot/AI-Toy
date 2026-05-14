@@ -59,20 +59,22 @@ def evaluate_brain_fitness(brain, input, answer):
 
     # Use difflib to calculate a similarity score between the brain's output and the expected answer
     score = difflib.SequenceMatcher(None, brain_output, answer).ratio()
-    return score
+    return score, brain_output
 
 # Evaluate the fitness of each brain in the population
 def evaluate_population(population, input, answer):
     fitness_scores = []
+    outputs = []
 
     # Evaluate each brain and store its fitness score
     for brain in population:
-        fitness = evaluate_brain_fitness(brain, input, answer)
+        fitness, output = evaluate_brain_fitness(brain, input, answer)
         fitness_scores.append(fitness)
+        outputs.append(output)
 
     # Find the brain with the highest fitness score and return it along with its score
     highest_fitness_idx = fitness_scores.index(max(fitness_scores))
-    return fitness_scores[highest_fitness_idx], population[highest_fitness_idx]
+    return fitness_scores[highest_fitness_idx], population[highest_fitness_idx], outputs[highest_fitness_idx]
 
 
 def main():
@@ -86,11 +88,11 @@ def main():
 
     for generation in range(generations):
         # Evaluate population
-        fitness, best_brain = evaluate_population(population, [0, 1], [0, 1])
+        fitness, best_brain, best_output = evaluate_population(population, [0, 1], [0, 1])
         
         # Check if we found a solution with perfect fitness
         if fitness >= 1:
-            print(f"Solution found in generation {generation + 1} with fitness {fitness:.4f}")
+            print(f"Solution found in generation {generation + 1} with fitness {fitness:.4f} and output {best_output}")
             break
 
         # Keep the best brain for the next generation
