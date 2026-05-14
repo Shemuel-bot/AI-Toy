@@ -23,10 +23,19 @@ class Brain:
     # This function takes an input and runs it through all the layers of the brain to produce an output
     def compute (self, input):
         input = [self.input[i] if i in input else 0 for i in range(len(self.input))]
-
+        output = []
+        # Run the input through each layer of the brain
         for i in range(len(self.brain)):
             input = Brain.run_layers(input, self.brain[i])
-        return [i for i in range(len(input)) if input[i] > self.threshhold]
+
+        for i in range(len(input)):
+            maximum = max(input)
+            if maximum > self.threshhold:
+                output.append(input.index(maximum))
+                input[input.index(maximum)] = -math.inf  # Set the maximum value to negative infinity to find the next maximum in the next iteration
+
+        return output
+
 
     def mutate(self, mutation_rate=0.1, mutation_strength=0.5):
         """
@@ -45,6 +54,7 @@ class Brain:
                     
                     # Optionally clamp weights to prevent them from growing too large
                     self.brain[layer_idx][neuron_idx] = max(-1.0, min(1.0, self.brain[layer_idx][neuron_idx]))
+        return self
 
 
 
@@ -78,7 +88,7 @@ def evaluate_population(population, input, answer):
 
 
 def main():
-    population_size = 100
+    population_size = 1000
     generations = 50
     mutation_rate = 0.1
     mutation_strength = 0.5
@@ -88,7 +98,7 @@ def main():
 
     for generation in range(generations):
         # Evaluate population
-        fitness, best_brain, best_output = evaluate_population(population, [0, 1], [0, 1])
+        fitness, best_brain, best_output = evaluate_population(population, [2, 1], [2, 1])
         
         # Check if we found a solution with perfect fitness
         if fitness >= 1:
@@ -96,11 +106,15 @@ def main():
             break
 
         # Keep the best brain for the next generation
-        new_population = [copy.deepcopy(best_brain.mutate(mutation_rate, mutation_strength)) for i in range(population_size)]  
+        new_population = []
+        for _ in range(population_size):
+            child = copy.deepcopy(best_brain)
+            child.mutate(mutation_rate, mutation_strength)
+            new_population.append(child)
         population = new_population
 
         # Print the best fitness score for this generation
-        print(f"Generation {generation + 1}: Best Fitness = {fitness:.4f}")
+        print(f"Generation {generation + 1}: Best Fitness = {fitness:.4f}: Output = {best_output}")
 
 
 if __name__ == "__main__":    main()
