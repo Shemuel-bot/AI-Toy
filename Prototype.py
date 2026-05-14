@@ -1,5 +1,6 @@
 import random
 import math
+import difflib
 
 class Brain:
     def __init__ (self, layers_amount, neurons, input):
@@ -40,6 +41,17 @@ class Brain:
                     self.brain[layer_idx][neuron_idx] = max(-1.0, min(1.0, self.brain[layer_idx][neuron_idx]))
 
 
+untokenized_input = [i for i in range(10)]
 
+def evaluate_brain_fitness(brain, input, answer):
+    brain_output = brain.compute(input)
+    score = difflib.SequenceMatcher(None, brain_output, answer).ratio()
+    return score
 
+def evaluate_population(population, input, answer):
+    fitness_scores = []
+    for brain in population:
+        fitness = evaluate_brain_fitness(brain, input, answer)
+        fitness_scores.append(fitness)
+    return fitness_scores
 
