@@ -22,6 +22,8 @@ class Brain:
 
     # This function takes an input and runs it through all the layers of the brain to produce an output
     def compute (self, input):
+        input = [self.input[i] if i in input else 0 for i in range(len(self.input))]
+
         for i in range(len(self.brain)):
             input = Brain.run_layers(input, self.brain[i])
         return [i for i in range(len(input)) if input[i] > self.threshhold]
@@ -43,6 +45,7 @@ class Brain:
                     
                     # Optionally clamp weights to prevent them from growing too large
                     self.brain[layer_idx][neuron_idx] = max(-1.0, min(1.0, self.brain[layer_idx][neuron_idx]))
+
 
 
 untokenized_input = [i for i in range(10)]
@@ -83,11 +86,19 @@ def main():
 
     for generation in range(generations):
         # Evaluate population
-        fitness, best_brain = evaluate_population(population, [tokenized_input[0]], [0])
+        fitness, best_brain = evaluate_population(population, [0, 1], [0, 1])
         
+        # Check if we found a solution with perfect fitness
+        if fitness >= 1:
+            print(f"Solution found in generation {generation + 1} with fitness {fitness:.4f}")
+            break
+
         # Keep the best brain for the next generation
         new_population = [copy.deepcopy(best_brain.mutate(mutation_rate, mutation_strength)) for i in range(population_size)]  
         population = new_population
+
+        # Print the best fitness score for this generation
         print(f"Generation {generation + 1}: Best Fitness = {fitness:.4f}")
 
 
+if __name__ == "__main__":    main()
