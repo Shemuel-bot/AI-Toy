@@ -22,7 +22,7 @@ class Brain:
 
     # This function takes an input and runs it through all the layers of the brain to produce an output
     def compute (self, input):
-        input = [self.input[i] if i in input else 0 for i in range(len(self.input))]
+        input = [self.input[i] if i in input else 0.5 for i in range(len(self.input))]
         output = []
         # Run the input through each layer of the brain
         for i in range(len(self.brain)):
@@ -90,15 +90,15 @@ def evaluate_population(population, input, answer):
 def main():
     population_size = 100
     generations = 1000
-    mutation_rate = 0.1
+    mutation_rate = 0.5
     mutation_strength = 0.5
 
     # Create an initial population of brains
-    population = [Brain(layers_amount=3, neurons=10, input=tokenized_input) for _ in range(population_size)]
+    population = [Brain(layers_amount=5, neurons=10, input=tokenized_input) for _ in range(population_size)]
 
     for generation in range(generations):
         # Evaluate population
-        fitness, best_brain, best_output = evaluate_population(population, [3, 2, 1], [2, 3, 1])
+        fitness, best_brain, best_output = evaluate_population(population, [3, 2], [2, 3, 1])
         
         # Check if we found a solution with perfect fitness
         if fitness >= 1:
