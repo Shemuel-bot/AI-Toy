@@ -1,6 +1,7 @@
 import random
 import math
 import difflib
+import copy
 
 class Brain:
     def __init__ (self, layers_amount, neurons, input):
@@ -10,13 +11,16 @@ class Brain:
         self.neurons_amount = neurons
         self.brain = [[-random.random() if random.choice([True, False]) else random.random() for j in range(neurons) ] for i in range(layers_amount)]
 
+    # This function takes two layers of neurons and computes the output of the first layer as input to the second layer
     def run_layers (lyr1, lyr2):
         new_lyr = [0 for i in range(len(lyr1))]
+
         for i in range(len(lyr1)):
             for j in  lyr2:
                 new_lyr[i] += (lyr1[i]+j)
         return new_lyr
 
+    # This function takes an input and runs it through all the layers of the brain to produce an output
     def compute (self, input):
         for i in range(len(self.brain)):
             input = Brain.run_layers(input, self.brain[i])
@@ -42,6 +46,9 @@ class Brain:
 
 
 untokenized_input = [i for i in range(10)]
+tokenized_input = [random.random() for _ in range(10)]  # Example tokenized input
+
+problem_set = [([0], [0])]
 
 # Evaluate the fitness of a single brain based on how closely its output matches the expected answer
 def evaluate_brain_fitness(brain, input, answer):
@@ -64,5 +71,23 @@ def evaluate_population(population, input, answer):
     highest_fitness_idx = fitness_scores.index(max(fitness_scores))
     return fitness_scores[highest_fitness_idx], population[highest_fitness_idx]
 
+
+def main():
+    population_size = 100
+    generations = 50
+    mutation_rate = 0.1
+    mutation_strength = 0.5
+
+    # Create an initial population of brains
+    population = [Brain(layers_amount=3, neurons=10, input=tokenized_input) for _ in range(population_size)]
+
+    for generation in range(generations):
+        # Evaluate population
+        fitness, best_brain = evaluate_population(population, [tokenized_input[0]], [0])
+        
+        # Keep the best brain for the next generation
+        new_population = [copy.deepcopy(best_brain.mutate(mutation_rate, mutation_strength)) for i in range(population_size)]  
+        population = new_population
+        print(f"Generation {generation + 1}: Best Fitness = {fitness:.4f}")
 
 
